@@ -67,6 +67,11 @@ namespace GestoreEventi
             return risultato;
         }
 
+        public void SvuotaLista()
+        {
+            Eventi.Clear();
+        }
+
         public static string ListaToString(List<Evento> eventi)
         {
             string risultato = string.Empty;
