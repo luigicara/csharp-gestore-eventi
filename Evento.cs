@@ -70,6 +70,26 @@ namespace GestoreEventi
             PostiPrenotati = 0;
         }
 
+        public Evento()
+        {
+            Console.Write("Inserisci il nome dell'evento: ");
+            string titolo = Console.ReadLine() ?? string.Empty;
+
+            Console.Write("Inserisci la data dell'evento: ");
+            string data = Console.ReadLine() ?? string.Empty;
+
+            Console.Write("Inserisci il numero di posti totali: ");
+            int numPosti;
+
+            while (!int.TryParse(Console.ReadLine(), out numPosti))
+                Console.WriteLine("Inserisci un NUMERO!");
+
+            Titolo = titolo;
+            Data = DateOnly.ParseExact(data, "dd/MM/yyyy");
+            NumPosti = numPosti;
+            PostiPrenotati = 0;
+        }
+
         public void PrenotaPosti (int postiDaPrenotare)
         {
             if (Data < DateOnly.FromDateTime(DateTime.Now))
@@ -85,6 +105,18 @@ namespace GestoreEventi
             PostiPrenotati += postiDaPrenotare;
         }
 
+        public void PrenotaPosti()
+        {
+            Console.Write("Quanti posti vuoi prenotare? ");
+
+            int postiDaPrenotare;
+
+            while (!int.TryParse(Console.ReadLine(), out postiDaPrenotare))
+                Console.WriteLine("Inserisci un NUMERO!");
+
+            this.PrenotaPosti(postiDaPrenotare);
+        }
+
         public void DisdiciPosti(int postiDaRimuovere)
         {
             if (Data < DateOnly.FromDateTime(DateTime.Now))
@@ -98,6 +130,47 @@ namespace GestoreEventi
             }
 
             PostiPrenotati -= postiDaRimuovere;
+        }
+
+        public void DisdiciPosti()
+        {
+            string scelta;
+
+            do
+            {
+                Console.Write("\r\nVuoi disdire dei posti (si/no)? ");
+
+                scelta = Console.ReadLine() ?? string.Empty;
+
+                while ((scelta != "si" && scelta != "no") || string.IsNullOrEmpty(scelta))
+                {
+                    Console.WriteLine("Inserisci scelta VALIDA!");
+                    scelta = Console.ReadLine() ?? string.Empty;
+                }
+
+                if (scelta == "si")
+                {
+                    Console.Write("Inserisci il numero di posti da disdire: ");
+                    int numeroPostiDaDisdire;
+
+                    while (!int.TryParse(Console.ReadLine(), out numeroPostiDaDisdire))
+                        Console.WriteLine("Inserisci un NUMERO!");
+
+                    this.DisdiciPosti(numeroPostiDaDisdire);
+                }
+                else
+                    Console.WriteLine("Ok va bene!");
+
+                this.PrenotatiEDisponibili();
+
+            } while (scelta == "si");
+        }
+
+        public void PrenotatiEDisponibili()
+        {
+            Console.WriteLine($"\r\nNumero di posti prenotati: {this.PostiPrenotati}");
+
+            Console.WriteLine($"Numero di posti disponibili: {this.NumPosti - this.PostiPrenotati}");
         }
 
         public override string ToString()
