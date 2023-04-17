@@ -18,7 +18,7 @@ namespace GestoreEventi
             set
             {
                 if (string.IsNullOrEmpty(value)) {
-                    throw new ArgumentNullException("Il campo \"Titolo\" non può essere vuoto!");
+                    throw new ArgumentNullException(null, "Il campo \"Titolo\" non può essere vuoto!");
                 } else
                 {
                     _titolo = value;
@@ -36,7 +36,7 @@ namespace GestoreEventi
             set
             {
                 if (value < DateOnly.FromDateTime(DateTime.Now)) { 
-                    throw new ArgumentOutOfRangeException("La data di un evento non può essere antecedente ad oggi!");
+                    throw new ArgumentOutOfRangeException(null, "La data di un evento non può essere antecedente ad oggi!");
                 } else
                 {
                     _data = value;
@@ -53,7 +53,7 @@ namespace GestoreEventi
             private set
             {
                 if (value < 0 == true) {
-                    throw new ArgumentOutOfRangeException("Il numero di posti non può essere inferiore a zero!"); 
+                    throw new ArgumentOutOfRangeException(null, "Il numero di posti non può essere inferiore a zero!"); 
                 } else
                 {
                     _numPosti = value;
@@ -70,13 +70,20 @@ namespace GestoreEventi
             PostiPrenotati = 0;
         }
 
-        public Evento()
+        public Evento(int index)
         {
-            Console.Write("Inserisci il nome dell'evento: ");
+            Console.Write($"\r\nInserisci il nome del {index}° evento: ");
             string titolo = Console.ReadLine() ?? string.Empty;
 
-            Console.Write("Inserisci la data dell'evento: ");
-            string data = Console.ReadLine() ?? string.Empty;
+            Titolo = titolo;
+
+            Console.Write("Inserisci la data dell'evento (gg/mm/yyyy): ");
+            DateOnly dataFormatted;
+
+            if (!DateOnly.TryParseExact(Console.ReadLine(), "dd/MM/yyyy", out dataFormatted))
+                throw new FormatException("Inserisci formato data valido (gg/mm/yyyy)");
+
+            Data = dataFormatted;
 
             Console.Write("Inserisci il numero di posti totali: ");
             int numPosti;
@@ -84,8 +91,6 @@ namespace GestoreEventi
             while (!int.TryParse(Console.ReadLine(), out numPosti))
                 Console.WriteLine("Inserisci un NUMERO!");
 
-            Titolo = titolo;
-            Data = DateOnly.ParseExact(data, "dd/MM/yyyy");
             NumPosti = numPosti;
             PostiPrenotati = 0;
         }
@@ -94,12 +99,12 @@ namespace GestoreEventi
         {
             if (Data < DateOnly.FromDateTime(DateTime.Now))
             {
-                throw new ArgumentOutOfRangeException("L'evento si è gia svolto, impossibile prenotare nuovi posti");
+                throw new ArgumentOutOfRangeException(null, "L'evento si è gia svolto, impossibile prenotare nuovi posti");
             }
 
             if (PostiPrenotati + postiDaPrenotare > NumPosti)
             {
-                throw new ArgumentOutOfRangeException($"L'evento non ha abbastanza posti disponibili, sono ancora disponibili {NumPosti - PostiPrenotati} posti");
+                throw new ArgumentOutOfRangeException(null, $"L'evento non ha abbastanza posti disponibili, sono ancora disponibili {NumPosti - PostiPrenotati} posti");
             }
 
             PostiPrenotati += postiDaPrenotare;
@@ -121,12 +126,12 @@ namespace GestoreEventi
         {
             if (Data < DateOnly.FromDateTime(DateTime.Now))
             {
-                throw new ArgumentOutOfRangeException("L'evento si è gia svolto, impossibile rimuovere posti");
+                throw new ArgumentOutOfRangeException(null, "L'evento si è gia svolto, impossibile rimuovere posti");
             }
 
             if (postiDaRimuovere > PostiPrenotati)
             {
-                throw new ArgumentOutOfRangeException($"Impossibile rimuovere più posti di quanti prenotati, sono stati prenotati {PostiPrenotati} posti");
+                throw new ArgumentOutOfRangeException(null, $"Impossibile rimuovere più posti di quanti prenotati, sono stati prenotati {PostiPrenotati} posti");
             }
 
             PostiPrenotati -= postiDaRimuovere;

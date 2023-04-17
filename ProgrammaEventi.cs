@@ -19,7 +19,7 @@ namespace GestoreEventi
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    throw new ArgumentNullException("Il campo \"Titolo\" non può essere vuoto!");
+                    throw new ArgumentNullException(null, "Il campo \"Titolo\" non può essere vuoto!");
                 }
                 else
                 {
@@ -34,6 +34,26 @@ namespace GestoreEventi
         {
             Titolo = titolo;
             Eventi = new List<Evento>();
+        }
+
+        public ProgrammaEventi()
+        {
+            Console.Write("Inserisci il nome del tuo programma Eventi: ");
+
+            while (true)
+            {
+                try
+                {
+                    Titolo = Console.ReadLine();
+                    Eventi = new List<Evento>();
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Write("\nRiprova: ");
+                }
+            }
         }
 
         public void AggiungiEvento(Evento evento)
@@ -61,7 +81,7 @@ namespace GestoreEventi
 
         public string ProgrammaToString()
         {
-            string risultato = Titolo + ":";
+            string risultato = "\r\n" + Titolo;
             risultato += ProgrammaEventi.ListaToString(Eventi);
 
             return risultato;
@@ -74,6 +94,9 @@ namespace GestoreEventi
 
         public static string ListaToString(List<Evento> eventi)
         {
+            if (eventi.Count == 0)
+                return "Non ci sono eventi corrispondenti!";
+
             string risultato = string.Empty;
 
             int index = 1;
